@@ -1,13 +1,21 @@
-#include <stdio.h>
-#include "head.h"
+struct regs {
+    unsigned int regs[32];
+    unsigned int mepc;
+    unsigned int mcause;
+    unsigned int mtval;
+};
 
-int main(void) {
-    printf("Hello, World!\nx = %d y = %d\n", x, y);
-    printf("%d\n", ok);
-    for (int i = 0; i < 2; i++)
-    {
-        printf("block %d\n", i);
+int     global_var = 1;
+int     bss;
+int     bss2 = 0;
+
+void do_trap(struct regs *p) {
+
+    if (p->mcause == 11) {
+        p->mepc += 4;
+        return ;
     }
+    for (;;)
+        ;
 
-    return 0;
 }
