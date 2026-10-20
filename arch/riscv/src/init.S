@@ -11,15 +11,17 @@ _start:
     la      t0,     __bss_start
     la      t1,     __bss_end
 .init_zero:
+    bgeu    t0,     t1,     .zero_fin
     sw      zero,   0(t0)
     addi    t0,     t0,     4
-    bne     t0,     t1,     .init_zero
+    j       .init_zero
+.zero_fin:
 
     la       t0,     __data_load
     la       t1,     __data_start
     la       t2,     __data_end
 .init_data:
-    beq     t1,     t2,     .data_fin
+    bgeu    t1,     t2,     .data_fin
     lw      a0,     0(t0)
     sw      a0,     0(t1)
     addi    t1,     t1,     4
