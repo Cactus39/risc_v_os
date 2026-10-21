@@ -1,21 +1,11 @@
-struct regs {
-    unsigned int regs[32];
-    unsigned int mepc;
-    unsigned int mcause;
-    unsigned int mtval;
-};
 
-int     global_var = 1;
+int     counter = 5;
 int     bss;
-int     bss2 = 0;
+char    *str = "stringsss";
 
-void do_trap(struct regs *p) {
-
-    if (p->mcause == 11) {
-        p->mepc += 4;
-        return ;
+int     main(void) {
+    for (;;) {
+        counter++;
+        __asm__ volatile ("ecall");
     }
-    for (;;)
-        ;
-
 }

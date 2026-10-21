@@ -3,7 +3,7 @@
 NAME = init.elf
 MEMMAP = arch/riscv/src/memmap.ld
 S_FILES = arch/riscv/src/init.S arch/riscv/src/entry.S arch/riscv/src/image.S
-C_FILES = main.c
+C_FILES = arch/riscv/src/trap.c main.c
 S_OBJS = $(S_FILES:.S=.o)
 C_OBJS = $(C_FILES:.c=.o)
 OBJS = $(S_OBJS) $(C_OBJS)

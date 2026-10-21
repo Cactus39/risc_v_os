@@ -11,15 +11,16 @@ SECTIONS
     .text : {
         KEEP(*(.MBR))
         *(.text*)
+        . = ALIGN(4);
     } > FLASH
 
     .rodata : {
         *(.rodata*)
         *(.srodata*)
+        . = ALIGN(4);
     } > FLASH
 
     .data : {
-        . = ALIGN(4);
         __data_start = .;
         *(.data*)
         *(.sdata*)

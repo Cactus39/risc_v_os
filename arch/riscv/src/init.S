@@ -22,31 +22,15 @@ _start:
     la       t2,     __data_end
 .init_data:
     bgeu    t1,     t2,     .data_fin
-    lw      a0,     0(t0)
-    sw      a0,     0(t1)
+    lw      t5,     0(t0)
+    sw      t5,     0(t1)
     addi    t1,     t1,     4
     addi    t0,     t0,     4
     j       .init_data
 .data_fin:
 
-    addi    s0,     zero,   0
-.loop:
-    nop
-    addi    s0,     s0,     1
-    nop
-    ecall
-
-    j       .loop
+    call    main
 
 .sleep:
     wfi
     j       .sleep
-
-    .balign 4
-
-.trap:
-    csrr    a0, mcause
-    csrr    a1, mepc
-    csrr    a2, mtval
-    csrr    a3, mstatus
-    j       .trap
