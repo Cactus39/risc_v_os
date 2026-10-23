@@ -1,11 +1,13 @@
 .PHONY: all re clean flash objdump fclean connect
 NAME = init.elf
 MEMMAP = arch/kernel/src/memmap.ld
-C_FILES = main.c
+C_FILES = init/main.c
 
 OBJS = $(C_FILES:.c=.o)
 HEADERS =
+IHEADERS =
 include arch/kernel/kernel.mk
+include drivers/drivers.mk
 
 GCC_FLAGS = -c -g -march=rv32imac_zicsr_zifencei -mabi=ilp32 -Wall -Wextra -Werror
 GCC_FLAGS_C = -ffreestanding -mstrict-align -fno-pic -Os -msmall-data-limit=0
@@ -17,7 +19,7 @@ $(NAME): $(OBJS) $(MEMMAP) $(HEADERS)
 %.o:%.S
 	riscv64-unknown-elf-gcc $(GCC_FLAGS) $< -o $@
 %.o:%.c
-	riscv64-unknown-elf-gcc -I $(HEADERS) $(GCC_FLAGS_C) $(GCC_FLAGS) $< -o $@
+	riscv64-unknown-elf-gcc $(IHEADERS) $(GCC_FLAGS_C) $(GCC_FLAGS) $< -o $@
 objdump:
 	riscv64-unknown-elf-objdump -d $(NAME)
 
