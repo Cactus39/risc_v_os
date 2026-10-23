@@ -29,6 +29,7 @@ _start:
     j       .init_data
 .data_fin:
 
+    call    init_reset
     call    main
 
 .sleep:
