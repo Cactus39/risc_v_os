@@ -3,9 +3,16 @@
 int     counter = 5;
 
 int     main(void) {
+    init_clk();
+    init_reset();
     init_uart();
-    while (1)
-        uart_test('q');
+    int res;
+    while (1) {
+        uart_puts("\033c");
+
+        res = uprintf("%d %x l%ine%%\n",12,11);
+        uprintf("%d\n", res);
+    }
 
     for (;;) {
         counter++;

@@ -30,7 +30,7 @@ connect:
 	openocd -f interface/cmsis-dap.cfg -f target/rp2350-riscv.cfg -c "adapter speed 5000"
 
 clean:
-	rm -rf *.o && rm -rf */*/*/*.o
+	find -name *.o -delete
 fclean: clean
 	rm -rf $(NAME)
 re: fclean all

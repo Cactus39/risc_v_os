@@ -49,17 +49,18 @@
 
 
 # define IO_BANK0_BASE 0x40028000UL
-# define GPIO0_CTRL 0x40028004UL
-# define GPIO1_CTRL 0x4002800cUL
-# define GPIO0_STATUS 0x40028000UL
-# define GPIO1_STATUS 0x40028008UL
+// # define GPIO0_CTRL 0x40028004UL
+// # define GPIO1_CTRL 0x4002800cUL
+// # define GPIO0_STATUS 0x40028000UL
+// # define GPIO1_STATUS 0x40028008UL
 
-# define GPIO0_PAD_CTRL 0x40038004UL
-# define GPIO1_PAD_CTRL 0x40038008UL
+# define PADS_BANK0_BASE 0x40038000UL
+// # define GPIO0_PAD_CTRL 0x40038004UL
+// # define GPIO1_PAD_CTRL 0x40038008UL
 # define GPIO_ISO_BIT (1 << 8)
-# define GPIO_OD_BIT (1 << 7)
-# define GPIO_IE_BIT (1 << 6)
-# define GPIO_PULLUP_BIT (1 << 3)
-# define GPIO_PULLDOWN_BIT (1 << 2)
+// # define GPIO_OD_BIT (1 << 7)
+// # define GPIO_IE_BIT (1 << 6)
+// # define GPIO_PULLUP_BIT (1 << 3)
+// # define GPIO_PULLDOWN_BIT (1 << 2)
 
 #endif

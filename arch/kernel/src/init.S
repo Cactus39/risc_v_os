@@ -10,12 +10,12 @@ _start:
 
     la      t0,     __bss_start
     la      t1,     __bss_end
-.init_zero:
-    bgeu    t0,     t1,     .zero_fin
+.init_bss:
+    bgeu    t0,     t1,     .bss_fin
     sw      zero,   0(t0)
     addi    t0,     t0,     4
-    j       .init_zero
-.zero_fin:
+    j       .init_bss
+.bss_fin:
 
     la       t0,     __data_load
     la       t1,     __data_start
@@ -29,7 +29,6 @@ _start:
     j       .init_data
 .data_fin:
 
-    call    init_reset
     call    main
 
 .sleep:
