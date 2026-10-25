@@ -1,12 +1,12 @@
 .PHONY: all re clean flash objdump fclean connect
 NAME = init.elf
-MEMMAP = arch/kernel/src/memmap.ld
+MEMMAP = arch/riscv/src/memmap.ld
 C_FILES = init/main.c
 
 OBJS = $(C_FILES:.c=.o)
 HEADERS =
 IHEADERS =
-include arch/kernel/kernel.mk
+include arch/riscv/kernel.mk
 include drivers/drivers.mk
 
 GCC_FLAGS = -c -g -march=rv32imac_zicsr_zifencei -mabi=ilp32 -Wall -Wextra -Werror
@@ -23,14 +23,14 @@ $(NAME): $(OBJS) $(MEMMAP) $(HEADERS)
 objdump:
 	riscv64-unknown-elf-objdump -d $(NAME)
 
-flash:
+flash: all
 	openocd -f interface/cmsis-dap.cfg -f\
 	target/rp2350-riscv.cfg -c "adapter speed 5000" -c "program $(NAME) verify reset exit"
 connect:
 	openocd -f interface/cmsis-dap.cfg -f target/rp2350-riscv.cfg -c "adapter speed 5000"
 
 clean:
-	find -name *.o -delete
+	find -name '*.o' -delete
 fclean: clean
 	rm -rf $(NAME)
 re: fclean all

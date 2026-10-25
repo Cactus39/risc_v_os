@@ -4,6 +4,7 @@
 # define REG(a) (*(volatile unsigned int *)(a))
 # define RESET_BASE 0x40020000UL
 # define RESET_DONE 0x40020008Ul
+# define SIO_BASE 0xd0000000UL
 
 # define RES_UART0_BIT (1 << 26)
 # define RES_PADS_BANK0_BIT (1 << 9)
@@ -26,6 +27,16 @@
 # define CLK_REF_SELECTED 0x40010038
 # define CLK_REF_XOSC_SELECTED (1 << 2)
 
+# define TICKS_RISCV_CTRL 0x4010803cUL  // running | enable
+# define TICKS_RISCV_CYCLES 0x40108040UL  // rw 0x1ff
+# define TICKS_RISCV_COUNT 0x40108044UL  // ro 0x1ff
+
+# define MTIMECTRL 0xd00001a4UL //dbg1 dbg0 fullspeed en
+# define MTIME 0xd00001b0UL
+# define MTIMEH 0xd00001b4UL
+# define MTIMECMP 0xd00001b8UL
+# define MTIMECMPH 0xd00001bcUL
+
 # define CLK_SYS_CTRL 0x4001003cUL
 # define CLK_SYS_SELECTED 0x40010044UL
 
@@ -45,18 +56,9 @@
 # define UART0_LCR_H 0x4007002cUL
 # define UART0_CR 0x40070030UL
 
-
-
-
 # define IO_BANK0_BASE 0x40028000UL
-// # define GPIO0_CTRL 0x40028004UL
-// # define GPIO1_CTRL 0x4002800cUL
-// # define GPIO0_STATUS 0x40028000UL
-// # define GPIO1_STATUS 0x40028008UL
-
 # define PADS_BANK0_BASE 0x40038000UL
-// # define GPIO0_PAD_CTRL 0x40038004UL
-// # define GPIO1_PAD_CTRL 0x40038008UL
+
 # define GPIO_ISO_BIT (1 << 8)
 // # define GPIO_OD_BIT (1 << 7)
 // # define GPIO_IE_BIT (1 << 6)

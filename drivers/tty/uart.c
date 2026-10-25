@@ -22,7 +22,7 @@ int init_uart(void) {
     return 0;
 }
 
-int uart_putchar(const char a){
+int uart_putchar(const unsigned char a){
     if (a == '\n')
         uart_putchar('\r');
     while (REG(UART0_FR) & UART0_FR_TXFF);
@@ -61,7 +61,7 @@ int uart_putnbr(int a) {
     return (c);
 }
 
-int uart_putnbr_h(unsigned int a) {
+int uart_putaddr(unsigned int a) {
     unsigned int nibble;
     uart_puts("0x");
     for (int i = 28; i >= 0; i -= 4) {
@@ -71,19 +71,28 @@ int uart_putnbr_h(unsigned int a) {
     return (10);
 }
 
+int uart_putnbr_h(unsigned int a) {
+    unsigned int nibble;
+    for (int i = 28; i >= 0; i -= 4) {
+        nibble = (a >> i & 0xf);
+        uart_putchar(nibble < 10 ? nibble + '0' : nibble - 10 + 'a');
+    }
+    return (8);
+}
 int uart_putnbr_u(const unsigned int a) {
     register int c = 0;
     if (a < 10) {
         c += uart_putchar(a + '0');
     }
     else {
-        c += uart_putnbr(a / 10);
+        c += uart_putnbr_u(a / 10);
         c += uart_putchar(a % 10 + '0');
     }
     return (c);
 }
 
-int uprintf(char *s, ...) {
+
+int uprintf(const char *s, ...) {
     register    int c = 0;
     va_list     args;
     if (s == (void *)0)
@@ -96,7 +105,7 @@ int uprintf(char *s, ...) {
                 c += uart_putnbr(va_arg(args, int));
             }
             else if (*s == 'p' || *s == 'x')
-                c += uart_putnbr_h(va_arg(args, unsigned int));
+                c += uart_putaddr(va_arg(args, unsigned int));
             else if (*s == 'c')
                 c += uart_putchar(va_arg(args, int));
             else if (*s == 'u')

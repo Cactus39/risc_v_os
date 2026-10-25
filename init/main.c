@@ -1,21 +1,40 @@
 #include <soc.h>
-
+#include <regs.h>
+#include <setup.h>
 int     counter = 5;
 
-int     main(void) {
+int     start_kernel(void) {
     init_clk();
     init_reset();
     init_uart();
+    start_ticks();
     int res;
-    while (1) {
-        uart_puts("\033c");
+    set_mtimecmp(1000000);
+    __asm__ __volatile__ ("csrs mie, %0":: "r"(128));
+    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(8));
 
-        res = uprintf("%d %x l%ine%%\n",12,11);
+    while (1)
+        __asm__ __volatile__ ("wfi");
+    while (0) {
+
+        uart_puts("\033c");
+        char *line = "%d %x l%ine%%\n";
+        res = uprintf(line,12,11);
         uprintf("%d\n", res);
     }
 
     for (;;) {
         counter++;
-        __asm__ __volatile__ ("" ::: "memory");
+        REG(0xd00001b0) = 0xffffffff;
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
+        __asm__ __volatile__ ("nop" ::: "memory");
     }
 }

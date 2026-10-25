@@ -1,6 +1,6 @@
     .section .text
     .globl _start
-
+    .globl _fail
 _start:
     csrr    t0,     mhartid
     bnez    t0,     .sleep
@@ -29,7 +29,11 @@ _start:
     j       .init_data
 .data_fin:
 
-    call    main
+    call    start_kernel
+
+_fail:
+    addi    t0,     zero,     0x201
+    lw      t1,     0(t0)
 
 .sleep:
     wfi

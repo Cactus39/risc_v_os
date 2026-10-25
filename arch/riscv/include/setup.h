@@ -1,7 +1,7 @@
 #ifndef SETUP_H
 # define SETUP_H
 
-
+void    _fail(void);
 //
 // # define REG(a) (*(volatile unsigned int *)(a))
 // # define RESET_BASE 0x40020000UL
