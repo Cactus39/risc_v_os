@@ -2,9 +2,9 @@
 #include <regs.h>
 #include <csr.h>
 #include <time.h>
-
-void    init_tasks(void);
-void    start_tasks(void);
+#include <tasks.h>
+// void    init_tasks(void);
+// void    start_tasks(void);
 
 
 int     start_kernel(void) {
