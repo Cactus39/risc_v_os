@@ -17,5 +17,5 @@ void    msleep(unsigned int ms) {
 }
 
 unsigned int    uptime_ms(void) {
-    return (jiffies * (1000 / HZ));
+    return (jiffies * (1000 / (HZ)));
 }

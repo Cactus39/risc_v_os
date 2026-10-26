@@ -4,18 +4,18 @@
 #include <time.h>
 
 void    init_tasks(void);
+void    start_tasks(void);
 
 
 int     start_kernel(void) {
     init_clk();
     init_reset();
     init_uart();
-    start_ticks();
-    set_mtimecmp(1000000);
-    __asm__ __volatile__ ("csrs mie, %0":: "r"(MIE_MTIE));
-    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MIE));
-    uprintf("\033c");
     init_tasks();
+    start_ticks();
+    uprintf("\033c");
+    start_tasks();
+
     // __asm__ __volatile__ ("ecall");
     // __asm__ __volatile__ ("call _fail");
     while (1) {

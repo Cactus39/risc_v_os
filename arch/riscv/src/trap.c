@@ -4,16 +4,16 @@
 
 extern void return_from_trap(void);
 
-typedef struct registers_s {
-    unsigned int regs[32];
-    unsigned int mepc;
-    unsigned int mcause;
-    unsigned int mtval;
-} registers_t;
+// typedef struct registers_s {
+//     unsigned int regs[32];
+//     unsigned int mepc;
+//     unsigned int mcause;
+//     unsigned int mtval;
+// } registers_t;
 
-typedef struct task_s {
-     registers_t *sp;
-} task_t;
+// typedef struct task_s {
+//      registers_t *sp;
+// } task_t;
 
 void log(unsigned int mepc, unsigned int mcause, unsigned int mtval) {
     uprintf("\n[I] mepc %x\n", mepc);
@@ -55,22 +55,34 @@ void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(
 }
 
 void    t1(void) {
-        uprintf("first\n");
+    while (1) {
+        uprintf("first %u\n", uptime_ms());
+        msleep(1000);
+    }
 }
 void    t2(void) {
-        uprintf("second\n");
-}void    t3(void) {
+    while (1) {
+        uprintf("second %u\n", uptime_ms());
+        msleep(2000);
+    }
+}
+void    t3(void) {
     uprintf("third\n");
 }
 
+void    start_tasks(void) {
+    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MPP | MSTATUS_MPIE));
+    __asm__ __volatile__ ("mv sp, %0\n\t"
+                            "j ret_from_trap":: "r"(current->sp));
+}
 void    init_tasks(void) {
     create_task(&tasks[0], stack[0], 2048, t1);
     create_task(&tasks[1], stack[1], 2048, t2);
     create_task(&tasks[2], stack[2], 2048, t3);
-    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MPP | MSTATUS_MPIE));
+    // __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MPP | MSTATUS_MPIE));
     current = &tasks[0];
-    __asm__ __volatile__ ("mv sp, %0\n\t"
-                            "j ret_from_trap":: "r"(current->sp));
+    // __asm__ __volatile__ ("mv sp, %0\n\t"
+    //                         "j ret_from_trap":: "r"(current->sp));
 }
 registers_t *do_trap(registers_t *p) {
     if (p->mcause == 11) {
