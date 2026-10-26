@@ -29,7 +29,7 @@ registers_t *schedule(registers_t *frame) {
 void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(*fn)(void)) {
     unsigned int top = (unsigned int)(stack + size) & ~0xf;
     registers_t *registers = (registers_t *)(top - 144);
-    for (int i = 0; i < 144 / 4; i = i + 4)
+    for (int i = 0; i < 144 / 4; i = i++)
         ((unsigned int *)registers)[i] = 0;
     registers->mepc = (unsigned int)fn;
     registers->regs[1] = (unsigned int)task_exit;
