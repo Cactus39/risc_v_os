@@ -3,8 +3,6 @@
 #include <csr.h>
 #include <time.h>
 #include <tasks.h>
-// void    init_tasks(void);
-// void    start_tasks(void);
 
 
 int     start_kernel(void) {

@@ -8,10 +8,7 @@ typedef struct registers_s {
     unsigned int mcause;
     unsigned int mtval;
 } registers_t;
-//
-// typedef struct task_s {
-//     registers_t *sp;
-// } task_t;
+
 
 /* mie mip bits*/
 #define MIE_MTIE (1 << 7)  // Machine Timer Interrupt Enable
