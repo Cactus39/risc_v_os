@@ -1,40 +1,33 @@
 #include <soc.h>
 #include <regs.h>
-#include <setup.h>
-int     counter = 5;
+#include <csr.h>
+#include <time.h>
+
+void    init_tasks(void);
+
 
 int     start_kernel(void) {
     init_clk();
     init_reset();
     init_uart();
     start_ticks();
-    int res;
+
     set_mtimecmp(1000000);
-    __asm__ __volatile__ ("csrs mie, %0":: "r"(128));
-    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(8));
+    __asm__ __volatile__ ("csrs mie, %0":: "r"(MIE_MTIE));
+    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MIE));
+    // __asm__ __volatile__ ("ecall");
+    // __asm__ __volatile__ ("call _fail");
+    init_tasks();
+    while (1) {
 
-    while (1)
-        __asm__ __volatile__ ("wfi");
-    while (0) {
+        // uprintf("\033c");
 
-        uart_puts("\033c");
-        char *line = "%d %x l%ine%%\n";
-        res = uprintf(line,12,11);
-        uprintf("%d\n", res);
+        uprintf("%d\n", uptime_ms());
+
+        msleep(1000);
     }
 
     for (;;) {
-        counter++;
-        REG(0xd00001b0) = 0xffffffff;
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
-        __asm__ __volatile__ ("nop" ::: "memory");
         __asm__ __volatile__ ("nop" ::: "memory");
     }
 }

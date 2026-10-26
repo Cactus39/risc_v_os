@@ -2,6 +2,7 @@
 
 .section .text
     .globl trap_entry
+    .globl ret_from_trap
     .balign 4
 
 trap_entry:
@@ -22,7 +23,8 @@ trap_entry:
 
     mv      a0,     sp
     call    do_trap
-
+    mv      sp,     a0
+ret_from_trap:
     lw      t0,     32*4(sp)
     csrw    mepc,   t0
 

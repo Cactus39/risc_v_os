@@ -1,3 +1,4 @@
+#include <csr.h>
 #include <soc.h>
 #include <regs.h>
 #include <stdarg.h>
@@ -97,6 +98,7 @@ int uprintf(const char *s, ...) {
     va_list     args;
     if (s == (void *)0)
         return (-1);
+    __asm__ __volatile__ ("csrc mstatus, %0":: "r"(MSTATUS_MIE));
     va_start(args, s);
     while (*s) {
         if (*s == '%' && *(s + 1)) {
@@ -104,8 +106,10 @@ int uprintf(const char *s, ...) {
             if (*s == 'd') {
                 c += uart_putnbr(va_arg(args, int));
             }
-            else if (*s == 'p' || *s == 'x')
+            else if (*s == 'p')
                 c += uart_putaddr(va_arg(args, unsigned int));
+            else if (*s == 'x')
+                c += uart_putnbr_h(va_arg(args, unsigned int));
             else if (*s == 'c')
                 c += uart_putchar(va_arg(args, int));
             else if (*s == 'u')
@@ -124,6 +128,7 @@ int uprintf(const char *s, ...) {
         }
     }
     va_end(args);
+    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MIE));
     return (c);
 }
 

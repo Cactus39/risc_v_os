@@ -6,8 +6,10 @@ C_FILES = init/main.c
 OBJS = $(C_FILES:.c=.o)
 HEADERS =
 IHEADERS =
-include arch/riscv/kernel.mk
+include arch/riscv/arch.mk
 include drivers/drivers.mk
+include config/config.mk
+include kernel/kernel.mk
 
 GCC_FLAGS = -c -g -march=rv32imac_zicsr_zifencei -mabi=ilp32 -Wall -Wextra -Werror
 GCC_FLAGS_C = -ffreestanding -mstrict-align -fno-pic -Os -msmall-data-limit=0
