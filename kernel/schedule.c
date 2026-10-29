@@ -8,11 +8,11 @@ static unsigned char idle_stack[512] __attribute__((aligned(16)));
 
 task_t tasks[3];
 task_t *current;
-task_t idle_task = {
-    .sp = (registers_t*)((idle_stack + 512) - 144),
-    .status = TASK_RUNNING,
-    .wake_at = 0
-};
+task_t idle_task;  // = {
+    // .sp = (registers_t*)((idle_stack + 512) - 144),
+    // .status = TASK_RUNNING,
+    // .wake_at = 0
+// };
 
 void    task_exit(void) {
     while (1)
@@ -31,9 +31,8 @@ registers_t *schedule(registers_t *frame) {
     static task_t      *last;
     current->sp = frame;
 
-    if (current == &idle_task) {
+    if (current == &idle_task)
         current = last;
-    }
     last = current;
     current = next_task(current);
 
@@ -46,8 +45,11 @@ registers_t *schedule(registers_t *frame) {
         }
         current = next_task(current);
     }
-    if (current->status == TASK_RUNNING)
+    if ((current->status == TASK_SLEEPING) && (current->wake_at <= jiffies))
+    {
+        current->status = TASK_RUNNING;
         return (current->sp);
+    }
     current = next_task(current);
     while (current != last)
     {
@@ -60,7 +62,7 @@ registers_t *schedule(registers_t *frame) {
     /* 0 i a 0 0 1 */
     current = &idle_task;
     return (idle_task.sp);
-    // return (current->sp);
+
 }
 
 void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(*fn)(void)) {
@@ -89,14 +91,17 @@ void    t2(void) {
 void    t3(void) {
     while (1) {
         uprintf("third %u\n", uptime_ms());
-        msleep(3000);
+        msleep(4000);
     }
 }
 
 void    start_tasks(void) {
 
-    idle_task.sp = (registers_t*)((idle_stack + 512) - 144);
-
+    idle_task.sp = (registers_t *)(((unsigned int)(idle_stack + 512) & ~(0xf)) - 144);
+    for (int i = 0; i < 144 / 4; i++)
+        ((unsigned int *)idle_task.sp)[i] = 0;
+    idle_task.status = TASK_RUNNING;
+    idle_task.wake_at = 0;
     idle_task.sp->mepc = (unsigned int)task_exit;
     idle_task.sp->regs[RA] = (unsigned int)task_exit;
     __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MPP | MSTATUS_MPIE));
