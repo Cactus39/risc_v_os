@@ -26,8 +26,9 @@ trap_entry:
     mv      a0,     sp
     call    do_trap
     mv      sp,     a0
-
 ret_from_trap:
+    lw      t0,     35*4(sp)
+    csrw    mstatus, t0
     lw      t0,     32*4(sp)
     csrw    mepc,   t0
 

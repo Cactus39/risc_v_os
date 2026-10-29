@@ -3,6 +3,8 @@
 #include <regs.h>
 #include <stdarg.h>
 
+int uart_puts(const char *s);
+
 int init_uart(void) {
     gpio_pad_set(0, 0, 0);  // pin od ie
     gpio_pad_set(1, 0, 1);
@@ -19,7 +21,7 @@ int init_uart(void) {
     REG(UART0_LCR_H) |= 1 << 4;  // fifo enable
     REG(UART0_CR) |= (1 << 8 | 1 << 9);
     REG(UART0_CR) |= 1;
-
+    uart_puts("\033c\033[32m[uart enabled]\n\033[0m");
     return 0;
 }
 

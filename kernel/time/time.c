@@ -13,7 +13,6 @@ void    tick_handler(void) {
 }
 
 void    msleep(unsigned int ms) {
-
     sys_sleep(ms);
 }
 
