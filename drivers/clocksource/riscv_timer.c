@@ -1,5 +1,6 @@
 #include <regs.h>
 #include <csr.h>
+#include <config.h>
 
 unsigned long long int  get_ticks(void) {
     unsigned int mtime = 0;
@@ -27,12 +28,11 @@ void    start_ticks(void) {
     REG(TICKS_RISCV_CYCLES) |= 0xc;
     REG(TICKS_RISCV_CTRL) |= 1;
     mtime64 = get_ticks();
-    mtime64 += 100000;
+    mtime64 += TICK_US;
     REG(MTIMECMP) = 0xffffffff;
     REG(MTIMECMPH) = mtime64 >> 32;
     REG(MTIMECMP) = ((mtime64 & 0xffffffff));
     __asm__ __volatile__ ("csrs mie, %0":: "r"(MIE_MTIE));
-    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MIE));
 }
 
 void set_mtimecmp(unsigned int ticks) {
@@ -44,10 +44,4 @@ void set_mtimecmp(unsigned int ticks) {
     REG(MTIMECMPH) = mtime64 >> 32;
     REG(MTIMECMP) = ((mtime64 & 0xffffffff));
 }
-
-void    udelay(unsigned int us) {
-    unsigned int start = ((unsigned int)get_ticks());
-    while ((unsigned int)get_ticks() - start < us);
-}
-
 

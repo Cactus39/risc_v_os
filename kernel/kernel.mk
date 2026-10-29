@@ -5,5 +5,5 @@ KERNEL_S_OBJS = $(KERNEL_S_FILES:.S=.o)
 
 KERNEL_OBJS = $(KERNEL_C_OBJS) $(KERNEL_S_OBJS)
 OBJS += $(KERNEL_OBJS)
-HEADERS += includes
-IHEADERS += -I includes
+HEADERS += includes/kernel
+IHEADERS += -I includes/kernel

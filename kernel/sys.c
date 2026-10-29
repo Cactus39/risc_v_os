@@ -1,13 +1,14 @@
 #include <schedule.h>
-// #include <time.h>
+#include <time.h>
+#include <config.h>
 
 extern task_t *current;
 
 /* CALL ONLY IN TRAP MACHINE MODE */
 
-void    __sys_sleep_task(unsigned int wake) {
+void    __sys_sleep_task(unsigned int ms) {
     current->status = TASK_SLEEPING;
-    current->wake_at = wake;
+    current->wake_at = jiffies + ((ms * HZ + 999)/1000);
 }
 
 int __sys_exit(int exit_code) {

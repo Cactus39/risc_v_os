@@ -14,6 +14,8 @@ char const *mcause_sec[] = {
     [6] = "Store/AMO address misaligned",
     [7] = "Store/AMO access fault",
     [8] = "Ecall from U-mode",
+    [9] = "Unknown",
+    [10] = "Unknown",
     [11] = "Ecall from M-mode",
     [12] = "Instruction page fault",
     [13] = "Load page fault",
@@ -27,7 +29,12 @@ void log(unsigned int mepc,
     uprintf("\n[I] mepc %x\n"
             "[I] mcause %x %s\n"
             "[I] mtval %u\n"
-            "[I] mstatus %u\n",mepc,mcause, mcause_sec[mcause], mtval, mstatus);
+            "[I] mstatus %x\n",
+            mepc,
+            mcause,
+            mcause_sec[mcause < 16 ? mcause : 9],
+            mtval,
+            mstatus);
 }
 
 registers_t *do_syscall(registers_t *p) {
@@ -48,7 +55,7 @@ registers_t *do_trap(registers_t *p){
         return (p);
     }
     if (p->mcause & (MCAUSE_IRQ)) {  // interrupts (1 << 31)
-        if ((p->mcause & 0x7) == MCAUSE_MTIRQ)  // machine timer interrupt
+        if ((p->mcause & ~(MCAUSE_IRQ)) == MCAUSE_MTIRQ)  // machine timer interrupt
         {
             tick_handler();
             return (schedule(p));

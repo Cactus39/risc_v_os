@@ -1,4 +1,4 @@
-#include <schedule.h>
+// #include <schedule.h>
 #include <soc.h>
 #include <time.h>
 #include <sys.h>
@@ -21,23 +21,24 @@ void    fn_task_idle(void) {
         __asm__ ("wfi");
 }
 
-int timer_before(unsigned int a, unsigned int b) {
-    if ((int)(a) - (int)(b) < 0)
+int time_before(unsigned int a, unsigned int b) {
+    if ((int)(a - b) < 0)
         return (1);
     return (0);
 }
 
-int timer_after(unsigned int a, unsigned int b) {
-    if ((int)(b) - (int)(a) < 0)
+int time_after(unsigned int a, unsigned int b) {
+    if ((int)(b - a) < 0)
         return (1);
     return (0);
 }
 
 int    time_to_wake(task_t *c) {
-    if ((c->status == TASK_SLEEPING) && (!timer_after(c->wake_at, jiffies)))
+    if ((c->status == TASK_SLEEPING) && (!time_after(c->wake_at, jiffies)))
         return (1);
     return (0);
 }
+
 registers_t *schedule(registers_t *frame) {
     static task_t      *last;
     current->sp = frame;
@@ -111,11 +112,13 @@ void    t3(void) {
 }
 
 void    start_tasks(void) {
+    unsigned int csr_flags = (MSTATUS_MPP | MSTATUS_MPIE);
     create_task(&idle_task, idle_stack, 512, fn_task_idle);
     idle_task.wake_at = 0;
     idle_task.status = TASK_RUNNING;
     idle_task.next = (void *)0;
-    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MPP | MSTATUS_MPIE));
+    current = &tasks[0];
+    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(csr_flags));
     __asm__ __volatile__ ("mv sp, %0\n\t"
                             "j ret_from_trap":: "r"(current->sp));
 }
@@ -126,5 +129,5 @@ void    add_task(void) {
     tasks[1].next = &tasks[2];
     create_task(&tasks[2], stack[2], 2048, t3);
     tasks[2].next = &tasks[0];
-    current = &tasks[0];
+
 }

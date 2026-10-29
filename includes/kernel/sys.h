@@ -7,7 +7,7 @@
 /* CALL ONLY INT TRAP MACHINE MODE */
 
 #include <schedule.h>
-void    __sys_sleep_task(unsigned int wake_at);
+void    __sys_sleep_task(unsigned int ms);
 int     __sys_exit(int exit_code);
 
 
