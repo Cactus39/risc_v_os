@@ -17,7 +17,7 @@ void    tick_handler(void) {
 // }
 void    msleep(unsigned int ms) {
 
-    __sys_sleep(ms);
+    sys_sleep(ms);
 }
 
 unsigned int    uptime_ms(void) {

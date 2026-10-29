@@ -1,30 +1,24 @@
 #include <schedule.h>
 #include <soc.h>
 #include <time.h>
-
+#include <sys.h>
 
 static unsigned char stack[3][2048] __attribute__((aligned(16)));
 static unsigned char idle_stack[512] __attribute__((aligned(16)));
 
 task_t tasks[3];
 task_t *current;
-task_t idle_task;  // = {
-    // .sp = (registers_t*)((idle_stack + 512) - 144),
-    // .status = TASK_RUNNING,
-    // .wake_at = 0
-// };
+task_t idle_task;
 
-void    task_exit(void) {
+void    fn_task_exit(void) {
+    sys_exit(0);
     while (1)
         __asm__ ("wfi");
 }
 
-task_t *next_task(task_t *t) {
-    if (t >= &tasks[2])
-        t = &tasks[0];
-    else
-        t++;
-    return t;
+void    fn_task_idle(void) {
+    while (1)
+        __asm__ ("wfi");
 }
 
 registers_t *schedule(registers_t *frame) {
@@ -34,7 +28,7 @@ registers_t *schedule(registers_t *frame) {
     if (current == &idle_task)
         current = last;
     last = current;
-    current = next_task(current);
+    current = current->next;
 
     while (current != last)
     {
@@ -43,19 +37,19 @@ registers_t *schedule(registers_t *frame) {
             current->status = TASK_RUNNING;
             return (current->sp);
         }
-        current = next_task(current);
+        current = current->next;
     }
     if ((current->status == TASK_SLEEPING) && (current->wake_at <= jiffies))
     {
         current->status = TASK_RUNNING;
         return (current->sp);
     }
-    current = next_task(current);
+    current = current->next;
     while (current != last)
     {
         if (current->status == TASK_RUNNING)
             return (current->sp);
-        current = next_task(current);
+        current = current->next;
     }
     if (current->status == TASK_RUNNING)
         return (current->sp);
@@ -72,38 +66,36 @@ void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(
     for (int i = 0; i < 144 / 4; i++)
         ((unsigned int *)registers)[i] = 0;
     registers->mepc = (unsigned int)fn;
-    registers->regs[RA] = (unsigned int)task_exit;
+    registers->regs[RA] = (unsigned int)fn_task_exit;
     task->sp = registers;
 }
 
 void    t1(void) {
-    while (1) {
-        uprintf("first %u\n", uptime_ms());
-        msleep(1000);
+    // while (1) {
+    for (int i = 0; i < 13; i++){
+        uprintf("first \t%u\n", uptime_ms());
+        msleep(10);
     }
 }
 void    t2(void) {
-    while (1) {
-        uprintf("second %u\n", uptime_ms());
-        msleep(2000);
+    // while (1) {
+    for (int i = 0; i < 7; i++){
+        uprintf("secon \t\t%u\n", uptime_ms());
+        msleep(20);
     }
 }
 void    t3(void) {
-    while (1) {
-        uprintf("third %u\n", uptime_ms());
-        msleep(4000);
+    // while (1) {
+    for (int i = 0; i < 4; i++){
+        uprintf("third \t\t\t%u\n", uptime_ms());
+        msleep(40);
     }
 }
 
 void    start_tasks(void) {
-
-    idle_task.sp = (registers_t *)(((unsigned int)(idle_stack + 512) & ~(0xf)) - 144);
-    for (int i = 0; i < 144 / 4; i++)
-        ((unsigned int *)idle_task.sp)[i] = 0;
-    idle_task.status = TASK_RUNNING;
+    create_task(&idle_task, idle_stack, 512, fn_task_idle);
     idle_task.wake_at = 0;
-    idle_task.sp->mepc = (unsigned int)task_exit;
-    idle_task.sp->regs[RA] = (unsigned int)task_exit;
+    idle_task.status = TASK_RUNNING;
     __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MPP | MSTATUS_MPIE));
     __asm__ __volatile__ ("mv sp, %0\n\t"
                             "j ret_from_trap":: "r"(current->sp));
@@ -115,13 +107,5 @@ void    add_task(void) {
     tasks[1].next = &tasks[2];
     create_task(&tasks[2], stack[2], 2048, t3);
     tasks[2].next = &tasks[0];
-
-
     current = &tasks[0];
 }
-
-// void    sys_sleep(unsigned int ms) {
-//     current->status = TASK_SLEEPING;
-//     current->wake_at = p->regs[A0];
-//
-// }

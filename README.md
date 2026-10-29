@@ -13,8 +13,8 @@ Flashed and debugged over SWD (Raspberry Pi Debug Probe, OpenOCD + gdb).
 - [x] Reset controller, pads and IO mux, PL011 UART0 driver
 - [x] `uprintf`: own formatter (`%d %u %x %s %c`), no libc
 - [x] Timer interrupt (`mtime` / `mtimecmp`, RISC-V tick generator), `jiffies`, `msleep()`, `uptime_ms()`
-- [x] Preemptive round-robin scheduler: 3 kernel threads with separate stacks, switched from the timer interrupt
-- [ ] Sleeping tasks (blocked state, wake-up time) instead of busy `msleep`
+- [x] Preemptive scheduler: 3 kernel threads with separate stacks, switched from the timer interrupt
+- [x] Sleeping tasks (blocked state, wake-up time) instead of busy `msleep`
 - [ ] Memory allocator
 - [ ] UART ring buffer + TX interrupt / DMA, `printk` with log levels
 - [ ] UART shell

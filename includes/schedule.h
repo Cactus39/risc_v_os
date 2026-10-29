@@ -5,7 +5,8 @@
 enum task_status_t{
     TASK_RUNNING,
     TASK_SLEEPING,
-    TASK_DEAD
+    TASK_DEAD,
+    TASK_ERROR
 };
 
 typedef struct task_s{

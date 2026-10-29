@@ -40,6 +40,8 @@ typedef struct registers_s {
 # define MCAUSE_EXCEPTION 11
 # define MCAUSE_IRQ (1u << 31)
 # define MCAUSE_MTIRQ 7
-# define MCAUSE_T
+
+
+
 
 #endif

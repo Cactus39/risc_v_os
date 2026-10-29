@@ -9,9 +9,9 @@ int     start_kernel(void) {
     init_clk();
     init_reset();
     init_uart();
+    uprintf("\033c");
     add_task();
     start_ticks();
-    uprintf("\033c");
     start_tasks();
 
     // __asm__ __volatile__ ("ecall");
