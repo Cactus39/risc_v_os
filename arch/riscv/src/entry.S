@@ -20,6 +20,8 @@ trap_entry:
     sw      t0,     33*4(sp)
     csrr    t0,     mtval
     sw      t0,     34*4(sp)
+    csrr    t0,     mstatus
+    sw      t0,     35*4(sp)
 
     mv      a0,     sp
     call    do_trap

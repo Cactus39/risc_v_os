@@ -2,24 +2,23 @@
 #include <regs.h>
 #include <csr.h>
 #include <time.h>
-#include <tasks.h>
+#include <schedule.h>
 
 
 int     start_kernel(void) {
     init_clk();
     init_reset();
     init_uart();
-    init_tasks();
+    add_task();
     start_ticks();
     uprintf("\033c");
     start_tasks();
 
     // __asm__ __volatile__ ("ecall");
     // __asm__ __volatile__ ("call _fail");
-    while (1) {
-
+    while (1)
+    {
         // uprintf("\033c");
-
         uprintf("%d\n", uptime_ms());
 
         msleep(1000);

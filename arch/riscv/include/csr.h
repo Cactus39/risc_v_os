@@ -7,7 +7,20 @@ typedef struct registers_s {
     unsigned int mepc;
     unsigned int mcause;
     unsigned int mtval;
+    unsigned int mstatus;
 } registers_t;
+
+/* registers macs */
+# define RA 01
+# define SP 02
+# define A0 10
+# define A1 11
+# define A2 12
+# define A3 13
+# define A4 14
+# define A5 15
+# define A6 16
+# define A7 17
 
 
 /* mie mip bits*/
@@ -22,5 +35,11 @@ typedef struct registers_s {
 # define MSTATUS_MIE (1 << 3)  // Machine Interrupt Enable
 # define MSTATUS_MPIE (1 << 7)  // Machine Previous Interrupt Enable
 # define MSTATUS_MPP (3 << 11)  // Machine Previous Privelege
+
+/* mcause macs */
+# define MCAUSE_EXCEPTION 11
+# define MCAUSE_IRQ (1u << 31)
+# define MCAUSE_MTIRQ 7
+# define MCAUSE_T
 
 #endif
