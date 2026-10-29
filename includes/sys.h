@@ -3,10 +3,11 @@
 # define ECALL_SLEEP 11
 # define ECALL_EXIT 60
 
+
 /* CALL ONLY INT TRAP MACHINE MODE */
 
 #include <schedule.h>
-void    __sys_sleep_task(unsigned int ms);
+void    __sys_sleep_task(unsigned int wake_at);
 int     __sys_exit(int exit_code);
 
 

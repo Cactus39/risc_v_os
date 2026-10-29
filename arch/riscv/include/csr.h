@@ -1,7 +1,12 @@
 #ifndef CSR_H
 # define CSR_H
 
-void    _fail(void);
+void            _fail(void);
+void            irq_enable(void);
+void            irq_disable(void);
+unsigned int    irq_save(void);
+void            irq_restore(unsigned int irq);
+
 typedef struct registers_s {
     unsigned int regs[32];
     unsigned int mepc;

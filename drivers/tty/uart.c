@@ -95,10 +95,13 @@ int uart_putnbr_u(const unsigned int a) {
 
 int uprintf(const char *s, ...) {
     register    int c = 0;
+    unsigned    int irq;
     va_list     args;
+
     if (s == (void *)0)
         return (-1);
-    __asm__ __volatile__ ("csrc mstatus, %0":: "r"(MSTATUS_MIE));
+    irq = irq_save();
+    // __asm__ __volatile__ ("csrc mstatus, %0":: "r"(MSTATUS_MIE));
     va_start(args, s);
     while (*s) {
         if (*s == '%' && *(s + 1)) {
@@ -128,7 +131,8 @@ int uprintf(const char *s, ...) {
         }
     }
     va_end(args);
-    __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MIE));
+    irq_restore(irq);
+    // __asm__ __volatile__ ("csrs mstatus, %0":: "r"(MSTATUS_MIE));
     return (c);
 }
 

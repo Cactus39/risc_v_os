@@ -1,5 +1,6 @@
 #include <regs.h>
 #include <csr.h>
+
 unsigned long long int  get_ticks(void) {
     unsigned int mtime = 0;
     unsigned long long int mtimeh = 0;
@@ -42,6 +43,11 @@ void set_mtimecmp(unsigned int ticks) {
     REG(MTIMECMP) = 0xffffffff;
     REG(MTIMECMPH) = mtime64 >> 32;
     REG(MTIMECMP) = ((mtime64 & 0xffffffff));
+}
+
+void    udelay(unsigned int us) {
+    unsigned int start = ((unsigned int)get_ticks());
+    while ((unsigned int)get_ticks() - start < us);
 }
 
 

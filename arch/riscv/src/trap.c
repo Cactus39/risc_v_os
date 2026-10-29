@@ -19,32 +19,32 @@ char const *mcause_sec[] = {
     [13] = "Load page fault",
     [15] = "Store/AMO page fault"
 };
-// extern void return_from_trap(void);
 
 void log(unsigned int mepc,
     unsigned int mcause,
     unsigned int mtval,
     unsigned int mstatus){
-    uprintf("\n[I] mepc %x\n", mepc);
-    uprintf("[I] mcause %x %s\n", mcause, mcause_sec[mcause]);
-    uprintf("[I] mtval %u\n", mtval);
-    uprintf("[I] mstatus %u\n", mstatus);
+    uprintf("\n[I] mepc %x\n"
+            "[I] mcause %x %s\n"
+            "[I] mtval %u\n"
+            "[I] mstatus %u\n",mepc,mcause, mcause_sec[mcause], mtval, mstatus);
+}
+
+registers_t *do_syscall(registers_t *p) {
+    if (p->regs[A7] == ECALL_SLEEP)
+        __sys_sleep_task((p->regs[A0]));
+    else if (p->regs[A7] == ECALL_EXIT)
+        __sys_exit(p->regs[A0]);
+    else
+        return (p);
+    return schedule(p);
 }
 
 registers_t *do_trap(registers_t *p){
     if (p->mcause == MCAUSE_EXCEPTION)
     {
         p->mepc += 4;
-        if (p->regs[A7] == ECALL_SLEEP)
-        {
-            __sys_sleep_task((p->regs[A0]));
-            return schedule(p);
-        }
-        if (p->regs[A7] == ECALL_EXIT) {
-            __sys_exit(p->regs[A0]);
-            return schedule(p);
-        }
-
+        p = do_syscall(p);
         return (p);
     }
     if (p->mcause & (MCAUSE_IRQ)) {  // interrupts (1 << 31)

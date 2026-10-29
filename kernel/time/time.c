@@ -10,14 +10,9 @@ void    tick_handler(void) {
     set_mtimecmp(next_tick);
 }
 
-// void    msleep(unsigned int ms) {
-//     unsigned int end = jiffies + ((ms * HZ + 999)/1000);
-//     while (jiffies < end)
-//         __asm__ __volatile__ ("wfi");
-// }
 void    msleep(unsigned int ms) {
 
-    sys_sleep(ms);
+    sys_sleep(jiffies + ((ms * HZ + 999)/1000));
 }
 
 unsigned int    uptime_ms(void) {

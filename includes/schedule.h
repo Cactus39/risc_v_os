@@ -20,6 +20,4 @@ registers_t     *schedule(registers_t *frame);
 void            start_tasks(void);
 void            add_task(void);
 
-
-
 #endif

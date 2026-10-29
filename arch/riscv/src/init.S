@@ -2,11 +2,13 @@
     .globl _start
     .globl _fail
 _start:
-    csrr    t0,     mhartid
-    bnez    t0,     .sleep
-    la      sp,     __stack_top
-    la      t0,     trap_entry
-    csrw    mtvec,  t0
+    csrr    t0,         mhartid
+    bnez    t0,         .sleep
+    csrci   mstatus,    8
+    csrw    mie,        zero
+    la      sp,         __stack_top
+    la      t0,         trap_entry
+    csrw    mtvec,      t0
 
     la      t0,     __bss_start
     la      t1,     __bss_end

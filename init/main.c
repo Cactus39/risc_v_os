@@ -9,20 +9,16 @@ int     start_kernel(void) {
     init_clk();
     init_reset();
     init_uart();
-    uprintf("\033c");
+    // uprintf("\033c");
+    // udelay(10000);
+    // uprintf("[started]");
     add_task();
     start_ticks();
     start_tasks();
+    // __asm__ __volatile__ ("call _fail");
+
 
     // __asm__ __volatile__ ("ecall");
-    // __asm__ __volatile__ ("call _fail");
-    while (1)
-    {
-        // uprintf("\033c");
-        uprintf("%d\n", uptime_ms());
-
-        msleep(1000);
-    }
 
     for (;;) {
         __asm__ __volatile__ ("nop" ::: "memory");
