@@ -4,16 +4,11 @@
 #include <time.h>
 #include <schedule.h>
 
+void    startup_init(int(f1)(void), int(f2)(void), int(f3)(void));
 
 int     start_kernel(void) {
 
-
-    init_clk();
-    init_reset();
-    init_uart();
-    // uprintf("\033c");
-    // uprintf("\033[32m[started]\033[0m\n");
-    // udelay(500000);
+    startup_init(&init_clk, &init_reset, &init_uart);
     add_task();
     start_ticks();
     start_tasks();

@@ -34,5 +34,5 @@ int init_clk(void) {
     while (!(REG(CLK_PERI_CTRL) & CLK_PERI_ENABLED) && --n);
     if (!n)
         return (-1);
-    return 0;
+    return (0);
 }

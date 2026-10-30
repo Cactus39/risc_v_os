@@ -97,6 +97,7 @@ void    t2(void) {
 }
 void    t3(void) {
     for (int i = 0; i < 3; i++){
+    // while (1){
         uprintf("\t\t%d\n", uptime_ms());
         msleep(40);
     }

@@ -14,6 +14,7 @@
 # define XOSC_ENABLE 0xfab
 # define XOSC_DISABLE 0xd1e
 # define XOSC_FREQ_1_15 0xaa0
+# define XOSC_FREQ_10_30 0xaa1
 
 # define XOSC_STATUS 0x40048004UL
 # define XOSC_STATUS_STABLE (1u << 31)
