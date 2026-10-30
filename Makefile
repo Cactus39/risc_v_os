@@ -4,8 +4,8 @@ MEMMAP = arch/riscv/src/memmap.ld
 C_FILES = init/main.c init/startup_init.c
 
 OBJS = $(C_FILES:.c=.o)
-HEADERS =
-IHEADERS =
+HEADERS = includes/soc includes/kernel
+IHEADERS = -I includes/soc -I includes/kernel
 include arch/riscv/arch.mk
 include drivers/drivers.mk
 include config/config.mk

@@ -11,7 +11,9 @@ task_t *current;
 task_t idle_task;
 
 void    fn_task_exit(void) {
+    uprintf("[exited] at %u\n", uptime_ms());
     sys_exit(0);
+    uprintf("\n\033[31m[ERROR]\033[0m task %p running after exit\n");
     while (1)
         __asm__ ("wfi");
 }

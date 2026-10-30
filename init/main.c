@@ -1,7 +1,4 @@
 #include <soc.h>
-#include <regs.h>
-#include <csr.h>
-#include <time.h>
 #include <schedule.h>
 
 void    startup_init(int(f1)(void), int(f2)(void), int(f3)(void));
