@@ -89,7 +89,7 @@ void    t1(void) {
         uprintf("%d\n", uptime_ms());
         msleep(10);
     }
-    _fail();
+    // _fail();
 }
 void    t2(void) {
     for (int i = 0; i < 5; i++){
