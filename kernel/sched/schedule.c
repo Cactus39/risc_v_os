@@ -3,8 +3,7 @@
 #include <time.h>
 #include <sys.h>
 
-static unsigned char stack[3][2048] __attribute__((aligned(16)));
-static unsigned char idle_stack[512] __attribute__((aligned(16)));
+static unsigned char stack[4][1024] __attribute__((aligned(16)));
 
 task_t tasks[3];
 task_t *current;
@@ -90,6 +89,7 @@ void    t1(void) {
         uprintf("%d\n", uptime_ms());
         msleep(10);
     }
+    _fail();
 }
 void    t2(void) {
     for (int i = 0; i < 5; i++){
@@ -106,7 +106,7 @@ void    t3(void) {
 }
 
 void    start_tasks(void) {
-    create_task(&idle_task, idle_stack, 512, fn_task_idle);
+    create_task(&idle_task, stack[3], 512, fn_task_idle);
     idle_task.wake_at = 0;
     idle_task.status = TASK_RUNNING;
     idle_task.next = (void *)0;

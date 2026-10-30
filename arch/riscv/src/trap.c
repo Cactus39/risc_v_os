@@ -22,19 +22,23 @@ char const *mcause_sec[] = {
     [15] = "Store/AMO page fault"
 };
 
-void log(unsigned int mepc,
+void kernel_panic(unsigned int mepc,
     unsigned int mcause,
     unsigned int mtval,
     unsigned int mstatus){
-    uprintf("\n[I] mepc %x\n"
-            "[I] mcause %x %s\n"
-            "[I] mtval %u\n"
-            "[I] mstatus %x\n",
+    irq_disable();
+    uprintf("----------------------------------------------------------------\n");
+    uprintf("Kernel panic\n");
+    uprintf("\033[31m[ERROR]\033[0m mepc\t%x\n"
+            "\033[31m[ERROR]\033[0m mcause\t%x\t%s\n"
+            "\033[31m[ERROR]\033[0m mtval\t%u\n"
+            "\033[31m[ERROR]\033[0m mstatus\t%x\n",
             mepc,
             mcause,
             mcause_sec[mcause < 16 ? mcause : 9],
             mtval,
             mstatus);
+    uprintf("----------------------------------------------------------------\n");
 }
 
 registers_t *do_syscall(registers_t *p) {
@@ -55,15 +59,15 @@ registers_t *do_trap(registers_t *p){
         return (p);
     }
     if (p->mcause & (MCAUSE_IRQ)) {  // interrupts (1 << 31)
-        if ((p->mcause & ~(MCAUSE_IRQ)) == MCAUSE_MTIRQ)  // machine timer interrupt
+        if ((p->mcause & ~(MCAUSE_IRQ)) == MCAUSE_MTIRQ)
         {
             tick_handler();
             return (schedule(p));
         }
         return (p);
     }
-    log(p->mepc, p->mcause, p->mtval, p->mstatus);
+    kernel_panic(p->mepc, p->mcause, p->mtval, p->mstatus);
     for (;;)
-        ;
+        __asm__ __volatile__ ("wfi");
 }
 

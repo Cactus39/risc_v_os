@@ -40,4 +40,11 @@ SECTIONS
     } > RAM
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
+
+    .heap : {
+        . = ALIGN(1024);
+        __heap_start = .;
+    } > RAM
+        __heap_end = __stack_top - 4k;
+
 }
