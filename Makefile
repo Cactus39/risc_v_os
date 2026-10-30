@@ -1,7 +1,7 @@
 .PHONY: all re clean flash objdump fclean connect
 NAME = init.elf
 MEMMAP = arch/riscv/src/memmap.ld
-C_FILES = init/main.c init/startup_log.c
+C_FILES = init/main.c init/startup_init.c
 
 OBJS = $(C_FILES:.c=.o)
 HEADERS =

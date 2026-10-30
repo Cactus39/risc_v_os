@@ -30,9 +30,9 @@ void    startup_init(int(f1)(void), int(f2)(void), int(f3)(void)) {
     uart_puts("\033c");
     startup_log(mem[1] == 0x0, "CORE ID\t\t", mem[1]);
     startup_log(mem[2] == 0x20000000, ".DATA START\t", mem[2]);
-    startup_log(!(mem[3] & 0xF), ".DATA END\t", mem[3]);
-    startup_log(((mem[4] >= mem[3]) & !(mem[4] & 0xF)), ".BSS START\t", mem[4]);
-    startup_log((!(mem[5] & 0xF)), ".BSS END\t", mem[5]);
+    startup_log(!(mem[3] & 0x3), ".DATA END\t", mem[3]);
+    startup_log(((mem[4] >= mem[3]) & !(mem[4] & 0x3)), ".BSS START\t", mem[4]);
+    startup_log((!(mem[5] & 0x3)), ".BSS END\t", mem[5]);
     startup_log(mem[0] == 0x20080000, "STACK TOP ON\t", mem[0]);
     startup_log(!status[0], "CLOCK\t\t", status[0]);
     startup_log(!status[1], "RESETS\t\t", status[1]);
