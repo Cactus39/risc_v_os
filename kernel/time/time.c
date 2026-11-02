@@ -3,8 +3,6 @@
 #include <sys.h>
 
 volatile unsigned int jiffies;
-extern task_t *current;
-extern unsigned long long int  get_ticks(void);
 
 void    tick_handler(void) {
     unsigned int next_tick = TICK_US;

@@ -1,6 +1,7 @@
 #ifndef SCHEDULE_H
 # define SCHEDULE_H
-# include <csr.h>
+// #include "../../arch/riscv/include/csr.h"
+// # include <csr.h>
 
 enum task_status_t{
     TASK_RUNNING,
@@ -8,12 +9,13 @@ enum task_status_t{
     TASK_DEAD,
     TASK_ERROR
 };
-
+typedef struct registers_s registers_t;
 typedef struct task_s{
     registers_t         *sp;
-    enum task_status_t    status;
-    unsigned int        wake_at;
     struct task_s       *next;
+    unsigned int        id;
+    unsigned int        wake_at;
+    enum task_status_t  status;
 } task_t;
 
 registers_t     *schedule(registers_t *frame);

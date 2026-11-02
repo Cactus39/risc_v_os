@@ -1,7 +1,8 @@
-// #include <schedule.h>
+#include <schedule.h>
 #include <soc.h>
 #include <time.h>
 #include <sys.h>
+#include <csr.h>
 
 static unsigned char stack[4][1024] __attribute__((aligned(16)));
 
@@ -10,7 +11,6 @@ task_t *current;
 task_t idle_task;
 
 void    fn_task_exit(void) {
-    uprintf("[exited] at %u\n", uptime_ms());
     sys_exit(0);
     uprintf("\n\033[31m[ERROR]\033[0m task %p running after exit\n");
     while (1)
@@ -21,21 +21,9 @@ void    fn_task_idle(void) {
     while (1)
         __asm__ ("wfi");
 }
-//
-// int time_before(unsigned int a, unsigned int b) {
-//     if ((int)(a - b) < 0)
-//         return (1);
-//     return (0);
-// }
-//
-// int time_after(unsigned int a, unsigned int b) {
-//     if ((int)(b - a) < 0)
-//         return (1);
-//     return (0);
-// }
 
 int    time_to_wake(task_t *c) {
-    if ((c->status == TASK_SLEEPING) && (int)(c->wake_at - jiffies)<=0)
+    if ((c->status == TASK_SLEEPING) && !TIME_AFTER(c->wake_at, jiffies))
         return (1);
     return (0);
 }
@@ -71,7 +59,7 @@ registers_t *schedule(registers_t *frame) {
 }
 
 void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(*fn)(void)) {
-    unsigned int csr_flags = ((MSTATUS_MPP) | MSTATUS_MPIE);
+    unsigned int csr_flags = (MSTATUS_MPP | MSTATUS_MPIE);
 
     unsigned int    top = (unsigned int)(stack + size) & ~0xf;
 
@@ -86,28 +74,29 @@ void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(
 
 void    t1(void) {
     for (int i = 0; i < 9; i++){
-        uprintf("%d\n", uptime_ms());
+        uprintf("\n %d", uptime_ms());
         msleep(10);
     }
     // _fail();
 }
 void    t2(void) {
     for (int i = 0; i < 5; i++){
-        uprintf("\t%d\n", uptime_ms());
+        uprintf("\t%d", uptime_ms());
         msleep(20);
     }
 }
 void    t3(void) {
     for (int i = 0; i < 3; i++){
     // while (1){
-        uprintf("\t\t%d\n", uptime_ms());
+        uprintf("\t\t%d", uptime_ms());
         msleep(40);
     }
 }
 
 void    start_tasks(void) {
-    create_task(&idle_task, stack[3], 512, fn_task_idle);
+    create_task(&idle_task, stack[3], 1024, fn_task_idle);
     idle_task.wake_at = 0;
+    idle_task.id = 0;
     idle_task.status = TASK_RUNNING;
     idle_task.next = (void *)0;
     current = &tasks[0];
@@ -116,14 +105,17 @@ void    start_tasks(void) {
 }
 
 void    add_task(void) {
-    create_task(&tasks[0], stack[0], 2048, t1);
+    create_task(&tasks[0], stack[0], 1024, t1);
     tasks[0].status = TASK_RUNNING;
+    tasks[0].id = 1;
     tasks[0].next = &tasks[1];
-    create_task(&tasks[1], stack[1], 2048, t2);
+    create_task(&tasks[1], stack[1], 1024, t2);
     tasks[1].status = TASK_RUNNING;
+    tasks[1].id = 2;
     tasks[1].next = &tasks[2];
-    create_task(&tasks[2], stack[2], 2048, t3);
+    create_task(&tasks[2], stack[2], 1024, t3);
     tasks[2].status = TASK_RUNNING;
+    tasks[2].id = 3;
     tasks[2].next = &tasks[0];
 
 }

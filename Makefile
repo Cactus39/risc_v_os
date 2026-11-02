@@ -4,15 +4,16 @@ MEMMAP = arch/riscv/src/memmap.ld
 C_FILES = init/main.c init/startup_init.c
 
 OBJS = $(C_FILES:.c=.o)
-HEADERS = includes/soc includes/kernel
+HEADERS = includes/soc includes/kernel includes
 IHEADERS = -I includes/soc -I includes/kernel
 include arch/riscv/arch.mk
 include drivers/drivers.mk
 include config/config.mk
 include kernel/kernel.mk
 
+TYPES_H = -include includes/types.h
 GCC_FLAGS = -c -g -march=rv32imac_zicsr_zifencei -mabi=ilp32 -Wall -Wextra -Werror
-GCC_FLAGS_C = -ffreestanding -mstrict-align -fno-pic -Os -msmall-data-limit=0
+GCC_FLAGS_C = $(TYPES_H) -ffreestanding -mstrict-align -fno-pic -Os -msmall-data-limit=0
 all: $(NAME)
 
 $(NAME): $(OBJS) $(MEMMAP) $(HEADERS)

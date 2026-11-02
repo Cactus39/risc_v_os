@@ -1,6 +1,7 @@
 #include <schedule.h>
 #include <time.h>
 #include <config.h>
+#include <soc.h>        //delete later
 
 extern task_t *current;
 
@@ -16,5 +17,10 @@ int __sys_exit(int exit_code) {
         current->status = TASK_DEAD;
     else
         current->status = TASK_ERROR;
+    uprintf(
+        "\n ID %u [exited] status %u at %u",
+        current->id,
+        current->status,
+        uptime_ms());
     return (exit_code);
 }

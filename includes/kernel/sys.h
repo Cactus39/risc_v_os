@@ -4,9 +4,8 @@
 # define ECALL_EXIT 60
 
 
-/* CALL ONLY INT TRAP MACHINE MODE */
+/* CALL ONLY IN TRAP MACHINE MODE */
 
-#include <schedule.h>
 void    __sys_sleep_task(unsigned int ms);
 int     __sys_exit(int exit_code);
 

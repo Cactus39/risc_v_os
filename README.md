@@ -15,7 +15,7 @@ Flashed and debugged over SWD (Raspberry Pi Debug Probe, OpenOCD + gdb).
 - [x] Timer interrupt (`mtime` / `mtimecmp`, RISC-V tick generator), `jiffies`, `msleep()`, `uptime_ms()`
 - [x] Preemptive scheduler: 3 kernel threads with separate stacks, switched from the timer interrupt
 - [x] Sleeping tasks (blocked state, wake-up time) instead of busy `msleep`
-- [ ] Memory allocator
+- [x] Buddy memory allocator
 - [ ] UART ring buffer + TX interrupt / DMA, `printk` with log levels
 - [ ] UART shell
 - [ ] User mode: PMP, `mscratch` kernel stack, syscalls via `ecall`
@@ -52,15 +52,19 @@ UART0 output (115200 8N1) shows the uptime and the messages of the three tasks.
 ## Repository layout
 
 ```
-arch/riscv/      boot (init.S, image.S), trap entry (entry.S, trap.c), CSR helpers, linker script
-drivers/clk/     XOSC and clock tree
-drivers/reset/   RESETS block
-drivers/pinctrl/ pads and IO mux
-drivers/tty/     PL011 UART and uprintf
-drivers/clocksource/  RISC-V tick generator, mtime / mtimecmp
-kernel/          scheduler, jiffies, msleep
-init/            start_kernel()
-config/          HZ and other compile-time options
+arch/riscv/             boot (init.S, image.S), trap entry (entry.S, trap.c), CSR helpers, linker script
+drivers/clk/            XOSC and clock tree
+drivers/reset/          RESETS block
+drivers/pinctrl/        pads and IO mux
+drivers/tty/            PL011 UART and uprintf
+drivers/clocksource/    RISC-V tick generator, mtime / mtimecmp
+includes/               Kernel and Soc headers
+kernel/sched/           scheduler, tasks
+kernel/time             jiffies, msleep
+kernel/sys              system calls
+kernel/mem              alloc / free pages
+init/                   start_kernel, startup_log
+config/                 HZ, PAGE_SIZE and other compile-time options
 ```
 
 ## References
