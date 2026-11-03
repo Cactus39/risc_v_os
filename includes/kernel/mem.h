@@ -11,7 +11,7 @@ typedef struct page_s {
 
 
 void    init_mem(void);
-page_t  *alloc_page(uint32_t pow);
+page_t  *alloc_pages(uint32_t k);
 void    free_pages(page_t *page, uint32_t order);
 
 #endif

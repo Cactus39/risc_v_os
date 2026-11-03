@@ -8,11 +8,11 @@ page_t      free_area[MAX_ORDER + 1];
 uint32_t    nbr_pages;
 
 int check_buddy(uint32_t buddy_idx, uint8_t order) {
+    if (buddy_idx >= nbr_pages)
+        return 0;
     if (memmap[buddy_idx].is_free == 0)
         return 0;
     if (memmap[buddy_idx].order != order)
-        return 0;
-    if (buddy_idx >= nbr_pages)
         return 0;
     return 1;
 }
@@ -61,17 +61,18 @@ uint32_t    divide_page(page_t *page, int pow) {
     return (0xffffffff);
 }
 
-page_t  *alloc_page(uint32_t pow) {
+page_t  *alloc_pages(uint32_t order) {
     uint32_t    res;
-    uint32_t    k = pow;
+    uint32_t    k = order;
 
     while (k <= MAX_ORDER) {
         if (list_empty(&free_area[k]))
             k++;
         else {
-            res = divide_page(&free_area[k], pow);
+            res = divide_page(&free_area[k], order);
             if (res != 0xffffffff)
                 return (&memmap[res]);
+            return (NULL);
         }
     }
     return (NULL);
@@ -96,10 +97,10 @@ void    init_mem(void) {
         memmap[i].index = i;
         free_pages(&memmap[i], 0);
     }
-    test[0] = alloc_page(1);
-    test[1] = alloc_page(2);
-    test[2] = alloc_page(3);
-    test[3] = alloc_page(4);
+    test[0] = alloc_pages(1);
+    test[1] = alloc_pages(2);
+    test[2] = alloc_pages(3);
+    test[3] = alloc_pages(4);
     for (int i = 0; i < 4; i++) {
         free_pages(test[i], test[i]->order);
     }

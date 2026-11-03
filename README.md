@@ -16,6 +16,7 @@ Flashed and debugged over SWD (Raspberry Pi Debug Probe, OpenOCD + gdb).
 - [x] Preemptive scheduler: 3 kernel threads with separate stacks, switched from the timer interrupt
 - [x] Sleeping tasks (blocked state, wake-up time) instead of busy `msleep`
 - [x] Buddy memory allocator
+- [ ] PMP
 - [ ] UART ring buffer + TX interrupt / DMA, `printk` with log levels
 - [ ] UART shell
 - [ ] User mode: PMP, `mscratch` kernel stack, syscalls via `ecall`
