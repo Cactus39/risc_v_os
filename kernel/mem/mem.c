@@ -37,14 +37,14 @@ void    free_pages(page_t *page, uint32_t order) {
     list_add(&free_area[order], &memmap[idx]);
 }
 
-uint32_t    divide_page(page_t *page, int pow) {
+uint32_t    divide_page(page_t *page, int req_order) {
 
     uint32_t    idx = page->next->index;
     uint32_t    buddy_idx;
     int8_t      order = page->order;
 
     while (order >= 0) {
-        if (order == pow) {
+        if (order == req_order) {
             list_del(&memmap[idx]);
             memmap[idx].is_free = 0;
             memmap[idx].order = order;
@@ -55,7 +55,7 @@ uint32_t    divide_page(page_t *page, int pow) {
         buddy_idx = idx ^ (1u << order);
         memmap[buddy_idx].is_free = 1;
         memmap[buddy_idx].order = order;
-        // list_del(&memmap[buddy_idx]); // not necessary
+        list_del(&memmap[buddy_idx]); // not necessary ?
         list_add(&free_area[order], &memmap[buddy_idx]);
     }
     return (0xffffffff);
@@ -104,6 +104,9 @@ void    init_mem(void) {
     for (int i = 0; i < 4; i++) {
         free_pages(test[i], test[i]->order);
     }
+    // free_pages(test[0], test[0]->order);
+    (void)test;
+
     int     total = 0;
     int     local = 0;
     for (int i = 0; i <= MAX_ORDER; i++) {

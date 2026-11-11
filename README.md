@@ -6,8 +6,8 @@ Flashed and debugged over SWD (Raspberry Pi Debug Probe, OpenOCD + gdb).
 
 ## Status
 
-- [x] Boot: PICOBIN `IMAGE` block, `_start`, stack, `.bss` zeroing, `.data` copy from flash to SRAM
-- [x] Linker script (`.data` has VMA in SRAM and LMA in flash)
+- [x] Boot: PICOBIN `image_def` block, `_start`, stack, `.bss` zeroing, `.data` copy from flash to SRAM
+- [x] Linker script (`.data` has VMA in RAM and LMA in flash)
 - [x] Machine-mode trap entry/exit: full register frame, `mcause` / `mepc` / `mtval`.
 - [x] Clock init: XOSC (12 MHz) -> `clk_ref` / `clk_sys` / `clk_peri`
 - [x] Reset controller, pads and IO mux, PL011 UART0 driver
