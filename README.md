@@ -6,7 +6,6 @@ Flashed and debugged over SWD (Raspberry Pi Debug Probe, OpenOCD + gdb).
 
 ## Status
 
-
 - [x] Boot: PICOBIN `image_def` block, `_start`, stack, `.bss` zeroing, `.data` copy from flash to SRAM
 - [x] Linker script (`.data` has VMA in RAM and LMA in flash)
 - [x] Machine-mode trap entry/exit: full register frame, `mcause` / `mepc` / `mtval`.
@@ -69,6 +68,21 @@ init/                   start_kernel, startup_log
 config/                 HZ, PAGE_SIZE and other compile-time options
 ```
 
-## References
 
+## Installation of openocd
+
+```
+sudo apt update
+sudo apt install git build-essential autoconf automake libtool pkg-config texinfo libusb-1.0-0-dev libhidapi-dev
+git clone https://github.com/raspberrypi/openocd.git
+cd openocd
+git submodule update --init --recursive
+./bootstrap
+./configure --enable-picoprobe --enable-cmsis-dap
+make -j$(nproc)
+sudo make install
+
+```
+## References
 - RP2350 datasheet (Raspberry Pi)
+
