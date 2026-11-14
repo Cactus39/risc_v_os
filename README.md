@@ -6,6 +6,7 @@ Flashed and debugged over SWD (Raspberry Pi Debug Probe, OpenOCD + gdb).
 
 ## Status
 
+
 - [x] Boot: PICOBIN `image_def` block, `_start`, stack, `.bss` zeroing, `.data` copy from flash to SRAM
 - [x] Linker script (`.data` has VMA in RAM and LMA in flash)
 - [x] Machine-mode trap entry/exit: full register frame, `mcause` / `mepc` / `mtval`.
