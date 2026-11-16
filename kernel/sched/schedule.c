@@ -44,7 +44,7 @@ registers_t *schedule(registers_t *frame) {
             current->status = TASK_RUNNING;
     	if (current->next->status == TASK_DEAD && current->next->page)
     	{
-    		free_pages(current->next->page, 0);
+    		free_pages(current->next->page, 1);
     		current->next->page = NULL;
     	}
         current = current->next;
@@ -65,7 +65,7 @@ registers_t *schedule(registers_t *frame) {
 }
 
 page_t	*create_task(task_t *task, unsigned int size, void(*fn)(void)) {
-	page_t			*page = alloc_pages(0);
+	page_t			*page = alloc_pages(1);
 	if (page == NULL)
 		return (NULL);
 	unsigned char	*stack = (unsigned char *)(RAM_START + (page->index * PAGE_SIZE));
@@ -104,7 +104,7 @@ void    t3(void) {
 }
 
 void    start_tasks(void) {
-	idle_task.mem = 1024;
+	idle_task.mem = 2048;
     idle_task.page = create_task(&idle_task, idle_task.mem, fn_task_idle);
 	if (idle_task.page == NULL)
 		return ;
@@ -118,21 +118,21 @@ void    start_tasks(void) {
 }
 
 void    add_task(void) {
-	tasks[0].mem = 1024;
+	tasks[0].mem = 2048;
     tasks[0].page = create_task(&tasks[0], tasks[0].mem, t1);
 	if (tasks[0].page == NULL)
 		return ;
     tasks[0].status = TASK_RUNNING;
     tasks[0].id = 1;
     tasks[0].next = &tasks[1];
-	tasks[1].mem = 1024;
+	tasks[1].mem = 2048;
     tasks[1].page = create_task(&tasks[1], tasks[1].mem, t2);
 	if (tasks[1].page == NULL)
 		return ;
     tasks[1].status = TASK_RUNNING;
     tasks[1].id = 2;
     tasks[1].next = &tasks[2];
-	tasks[2].mem = 1024;
+	tasks[2].mem = 2048;
     tasks[2].page = create_task(&tasks[2], tasks[2].mem, t3);
 	if (tasks[2].page == NULL)
 		return ;
