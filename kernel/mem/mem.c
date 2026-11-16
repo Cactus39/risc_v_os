@@ -134,7 +134,7 @@ void    init_mem(void) {
 	uprintf("\nfirst %d\n", first_idx);
 	uprintf("\nlast %d\n", last_idx);
     for (uint32_t i = first_idx; i < last_idx; i++) {
-        memmap[i].is_free = 1;
+        memmap[i].is_free = 0;
         memmap[i].index = i;
         free_pages(&memmap[i], 0);
     }
