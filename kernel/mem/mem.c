@@ -23,10 +23,10 @@ void    free_pages(page_t *page, uint32_t order) {
     uint32_t        buddy_idx;
 	uint32_t		irq;
 
-	if ((page == NULL) || page->is_free == 1 || (page->allocated != 1))
+	if ((page == NULL) || page->is_free == 1 || (page->is_alloc != 1))
 		return ;
     irq = irq_save();
-	page->allocated = 0;
+	page->is_alloc = 0;
     while (order < MAX_ORDER) {
         buddy_idx = idx ^ (1u << order);
         if (check_buddy(buddy_idx, order)) {
@@ -55,7 +55,7 @@ uint32_t    divide_page(page_t *page, int req_order) {
             list_del(&memmap[idx]);
             memmap[idx].is_free = 0;
             memmap[idx].order = order;
-            memmap[idx].allocated = 1;
+            memmap[idx].is_alloc = 1;
             return (idx);
         }
         order--;
@@ -136,6 +136,7 @@ void    init_mem(void) {
 	uprintf("\nlast %d\n", last_idx);
     for (uint32_t i = first_idx; i < last_idx; i++) {
         memmap[i].is_free = 0;
+        memmap[i].is_alloc = 1;
         memmap[i].index = i;
         free_pages(&memmap[i], 0);
     }
