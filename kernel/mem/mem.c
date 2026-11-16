@@ -6,7 +6,7 @@
 
 page_t      memmap[NUM_PAGES];
 page_t      free_area[MAX_ORDER + 1];
-//uint32_t    nbr_pages;
+
 
 int check_buddy(uint32_t buddy_idx, uint8_t order) {
     if (buddy_idx >= NUM_PAGES)
@@ -23,9 +23,9 @@ void    free_pages(page_t *page, uint32_t order) {
     uint32_t        buddy_idx;
 	uint32_t		irq;
 
+    irq = irq_save();
 	if ((page == NULL) || page->is_free == 1 || (page->is_alloc != 1))
 		return ;
-    irq = irq_save();
 	page->is_alloc = 0;
     while (order < MAX_ORDER) {
         buddy_idx = idx ^ (1u << order);
