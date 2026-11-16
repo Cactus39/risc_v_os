@@ -13,7 +13,7 @@ task_t *current;
 task_t idle_task;
 
 void    fn_task_exit(void) {
-	check_mem();
+	//check_mem();
     sys_exit(0);
     uprintf("\n\033[31m[ERROR]\033[0m task %p running after exit\n");
     while (1)
@@ -44,8 +44,8 @@ registers_t *schedule(registers_t *frame) {
     {
         if (time_to_wake(current))
             current->status = TASK_RUNNING;
-    	if (current->next->status == TASK_DEAD)
-    		free_pages(current->next->page, (current->next->mem + PAGE_SIZE - 1)>>10);
+    	//if (current->next->status == TASK_DEAD)
+    	//	free_pages(current->next->page, (current->next->mem + PAGE_SIZE - 1)>>10);
         current = current->next;
     }
     if (time_to_wake(current))
