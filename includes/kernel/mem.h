@@ -7,6 +7,7 @@ typedef struct page_s {
     int             index;
     uint8_t         order;
     uint8_t         is_free;
+    uint8_t         allocated;
 } page_t;
 
 

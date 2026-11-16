@@ -4,8 +4,8 @@
 // # include <csr.h>
 
 enum task_status_t{
-    TASK_DEAD,
     TASK_RUNNING,
+    TASK_DEAD,
     TASK_SLEEPING,
     TASK_ERROR
 };
