@@ -11,6 +11,7 @@ task_t *current;
 task_t idle_task;
 
 void    fn_task_exit(void) {
+	check_mem();
     sys_exit(0);
     uprintf("\n\033[31m[ERROR]\033[0m task %p running after exit\n", &current);
     while (1)
@@ -19,11 +20,7 @@ void    fn_task_exit(void) {
 
 void    fn_task_idle(void) {
     while (1)
-        //__asm__ ("wfi");
-    {
-	    check_mem();
-    	msleep(5000);
-    }
+        __asm__ ("wfi");
 }
 
 int    time_to_wake(task_t *c) {
