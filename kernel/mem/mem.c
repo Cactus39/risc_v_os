@@ -97,16 +97,26 @@ void	check_mem(void){
 void    init_mem(void) {
     uint32_t    heap_end;
     uint32_t    heap_start;
+	uint32_t	first_idx;
+	uint32_t	last_idx;
+
 
     __asm__ __volatile__("la %0, __heap_end":"=r" (heap_end));
     __asm__ __volatile__("la %0, __heap_start":"=r" (heap_start));
     nbr_pages = (heap_end - heap_start) >> PAGE_SHIFT;
+	/* init heads in free_area */
     for (uint32_t i = 0; i <= MAX_ORDER; i++) {
         free_area[i].next = &free_area[i];
         free_area[i].prev = &free_area[i];
         free_area[i].order = i;
         free_area[i].index = -1;
     }
+	/* init free pages */
+	first_idx = ((heap_start - RAM_BASE + (PAGE_SIZE - 1)) >> 10);
+	last_idx = ((heap_end - RAM_BASE) >> 10);
+
+	uprintf("\nfirst %x\n", first_idx);
+	uprintf("\nlast %x\n", last_idx);
     for (uint32_t i = 0; i < nbr_pages; i++) {
         memmap[i].is_free = 1;
         memmap[i].index = i;

@@ -1,4 +1,4 @@
-.PHONY: all re clean flash objdump fclean connect
+.PHONY: all re clean flash objdump fclean connect d_compile
 NAME = init.elf
 MEMMAP = arch/riscv/src/memmap.ld
 C_FILES = init/main.c init/startup_init.c
@@ -37,3 +37,6 @@ clean:
 fclean: clean
 	rm -rf $(NAME)
 re: fclean all
+
+d_compile:
+	docker run --rm -v $(shell pwd):/workspace riscv-builder make
