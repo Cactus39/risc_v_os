@@ -19,7 +19,11 @@ void    fn_task_exit(void) {
 
 void    fn_task_idle(void) {
     while (1)
-        __asm__ ("wfi");
+        //__asm__ ("wfi");
+    {
+	    check_mem();
+    	msleep(5000);
+    }
 }
 
 int    time_to_wake(task_t *c) {
@@ -97,8 +101,7 @@ void    t2(void) {
 void    t3(void) {
     for (int i = 0; i < 3; i++){
     //while (1){
-        //uprintf("\t\t%d", uptime_ms());
-    	check_mem();
+        uprintf("\t\t%d", uptime_ms());
         msleep(4000);
     }
 }
