@@ -18,7 +18,7 @@ int __sys_exit(int exit_code) {
     else
         current->status = TASK_ERROR;
     uprintf(
-        "\n ID %u [exited] status %u at %u",
+        "\n ID %u [exited] status %u at %u\n",
         current->id,
         current->status,
         uptime_ms());
