@@ -9,9 +9,9 @@ int     start_kernel(void) {
 
     startup_init(&init_clk, &init_reset, &init_uart);
     init_mem();
-    // add_task();
-    // start_ticks();
-    // start_tasks();
+    add_task();
+    start_ticks();
+    start_tasks();
 
     while (1)
         __asm__ __volatile__ ("wfi");
