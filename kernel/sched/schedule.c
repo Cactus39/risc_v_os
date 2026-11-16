@@ -13,6 +13,7 @@ task_t *current;
 task_t idle_task;
 
 void    fn_task_exit(void) {
+	check_mem();
     sys_exit(0);
     uprintf("\n\033[31m[ERROR]\033[0m task %p running after exit\n");
     while (1)
@@ -83,22 +84,22 @@ page_t	*create_task(task_t *task, unsigned int size, void(*fn)(void)) {
 void    t1(void) {
     for (int i = 0; i < 9; i++){
         uprintf("\n %d", uptime_ms());
-        msleep(10);
+        msleep(1000);
     }
     // _fail();
 }
 void    t2(void) {
     for (int i = 0; i < 5; i++){
         uprintf("\t%d", uptime_ms());
-        msleep(20);
+        msleep(2000);
     }
 }
 void    t3(void) {
-    //for (int i = 0; i < 3; i++){
-    while (1){
-        //uprintf("\t\t%d", uptime_ms());
-    	check_mem();
-        msleep(3000);
+    for (int i = 0; i < 3; i++){
+    //while (1){
+        uprintf("\t\t%d", uptime_ms());
+    	//check_mem();
+        msleep(4000);
     }
 }
 
