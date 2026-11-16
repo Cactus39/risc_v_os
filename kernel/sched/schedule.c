@@ -44,8 +44,8 @@ registers_t *schedule(registers_t *frame) {
     {
         if (time_to_wake(current))
             current->status = TASK_RUNNING;
-    	if (current->status == TASK_DEAD)
-    		free_pages(current->page, (current->mem + PAGE_SIZE - 1)>>10);
+    	if (current->next->status == TASK_DEAD)
+    		free_pages(current->next->page, (current->next->mem + PAGE_SIZE - 1)>>10);
         current = current->next;
     }
     if (time_to_wake(current))
