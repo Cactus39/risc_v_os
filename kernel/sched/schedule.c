@@ -98,7 +98,7 @@ void    t3(void) {
     while (1){
         //uprintf("\t\t%d", uptime_ms());
     	check_mem();
-        msleep(40);
+        msleep(3000);
     }
 }
 
