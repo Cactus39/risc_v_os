@@ -45,7 +45,7 @@ registers_t *schedule(registers_t *frame) {
         if (time_to_wake(current))
             current->status = TASK_RUNNING;
     	if (current->next->status == TASK_DEAD)
-    		free_pages(current->next->page, (current->next->mem + PAGE_SIZE - 1)>>10);
+    		free_pages(current->next->page, 0);
         current = current->next;
     }
     if (time_to_wake(current))
@@ -64,7 +64,7 @@ registers_t *schedule(registers_t *frame) {
 }
 
 page_t	*create_task(task_t *task, unsigned int size, void(*fn)(void)) {
-	page_t			*page = alloc_pages((size + (PAGE_SIZE - 1)) >> 10);
+	page_t			*page = alloc_pages(0);
 	if (page == NULL)
 		return (NULL);
 	unsigned char	*stack = (unsigned char *)(RAM_START + (page->index * PAGE_SIZE));
