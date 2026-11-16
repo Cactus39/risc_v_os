@@ -55,7 +55,7 @@ uint32_t    divide_page(page_t *page, int req_order) {
         buddy_idx = idx ^ (1u << order);
         memmap[buddy_idx].is_free = 1;
         memmap[buddy_idx].order = order;
-        list_del(&memmap[buddy_idx]); // not necessary ?
+        list_del(&memmap[buddy_idx]);
         list_add(&free_area[order], &memmap[buddy_idx]);
     }
     return (0xffffffff);
@@ -78,10 +78,25 @@ page_t  *alloc_pages(uint32_t order) {
     return (NULL);
 }
 
+void	check_mem(void){
+	int     total = 0;
+    	int     local = 0;
+
+    	for (int i = 0; i <= MAX_ORDER; i++) {
+       		 uprintf("size %d free blocks %d  mem %d\n",
+            	(1<<i) * 1024,
+            	local = list_count(&free_area[i]),
+            	(free_area[i].next->index));
+        	total += (local * (1 << i));
+    	}
+        uprintf("total pages %d\n", nbr_pages);
+        uprintf("free pages %d\n", total);
+}
+
+
 void    init_mem(void) {
     uint32_t    heap_end;
     uint32_t    heap_start;
-    page_t      *test[4];
 
     __asm__ __volatile__("la %0, __heap_end":"=r" (heap_end));
     __asm__ __volatile__("la %0, __heap_start":"=r" (heap_start));
@@ -93,34 +108,13 @@ void    init_mem(void) {
         free_area[i].index = -1;
     }
     for (uint32_t i = 0; i < nbr_pages; i++) {
-        memmap[i].is_free = 0;
+        memmap[i].is_free = 1;
         memmap[i].index = i;
         free_pages(&memmap[i], 0);
     }
-    test[0] = alloc_pages(1);
-    test[1] = alloc_pages(2);
-    test[2] = alloc_pages(3);
-    test[3] = alloc_pages(4);
-    for (int i = 0; i < 4; i++) {
-        free_pages(test[i], test[i]->order);
-    }
-    // free_pages(test[0], test[0]->order);
-    (void)test;
 
-    int     total = 0;
-    int     local = 0;
-    for (int i = 0; i <= MAX_ORDER; i++) {
-        uprintf("size %d free blocks %d  mem %d\n",
-            (1<<i) * 1024,
-            local = list_count(&free_area[i]),
-            (free_area[i].next->index));
-        total += (local * (1 << i));
-    }
-        uprintf("pages %d\n", nbr_pages);
-        uprintf("total %d\n", total);
+    check_mem();
 }
-
-
 
 
 
