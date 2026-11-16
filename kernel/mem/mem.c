@@ -23,6 +23,8 @@ void    free_pages(page_t *page, uint32_t order) {
     uint32_t        buddy_idx;
 	uint32_t		irq;
 
+	if (page->is_free == 1)
+		return ;
     irq = irq_save();
     while (order < MAX_ORDER) {
         buddy_idx = idx ^ (1u << order);
