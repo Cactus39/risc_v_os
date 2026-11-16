@@ -121,7 +121,7 @@ void    init_mem(void) {
     }
 	/* init free pages */
 	first_idx = ((heap_start - RAM_START + (PAGE_SIZE - 1)) >> 10);
-	last_idx = ((heap_end - RAM_END) >> 10);
+	last_idx = ((heap_end - RAM_START) >> 10);
 
 	uprintf("\nfirst %d\n", first_idx);
 	uprintf("\nlast %d\n", last_idx);
