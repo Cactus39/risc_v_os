@@ -6,14 +6,11 @@
 #include <mem.h>
 #include <config.h>
 
-//static unsigned char stack[4][1024] __attribute__((aligned(16)));
-
 task_t tasks[3];
 task_t *current;
 task_t idle_task;
 
 void    fn_task_exit(void) {
-	check_mem();
     sys_exit(0);
     uprintf("\n\033[31m[ERROR]\033[0m task %p running after exit\n", &current);
     while (1)
@@ -98,8 +95,8 @@ void    t2(void) {
     }
 }
 void    t3(void) {
-    //for (int i = 0; i < 3; i++){
-    while (1){
+    for (int i = 0; i < 3; i++){
+    //while (1){
         //uprintf("\t\t%d", uptime_ms());
     	check_mem();
         msleep(4000);
@@ -107,10 +104,12 @@ void    t3(void) {
 }
 
 void    start_tasks(void) {
-    idle_task.page = create_task(&idle_task, 1024, fn_task_idle);
+	idle_task.mem = 1024;
+    idle_task.page = create_task(&idle_task, idle_task.mem, fn_task_idle);
+	if (idle_task.page == NULL)
+		return ;
     idle_task.wake_at = 0;
     idle_task.id = 0;
-	idle_task.mem = 1024;
     idle_task.status = TASK_RUNNING;
     idle_task.next = (void *)0;
     current = &tasks[0];
@@ -119,20 +118,26 @@ void    start_tasks(void) {
 }
 
 void    add_task(void) {
-    tasks[0].page = create_task(&tasks[0], 1024, t1);
+	tasks[0].mem = 1024;
+    tasks[0].page = create_task(&tasks[0], tasks[0].mem, t1);
+	if (tasks[0].page == NULL)
+		return ;
     tasks[0].status = TASK_RUNNING;
     tasks[0].id = 1;
-	tasks[0].mem = 1024;
     tasks[0].next = &tasks[1];
-    tasks[1].page = create_task(&tasks[1], 1024, t2);
+	tasks[1].mem = 1024;
+    tasks[1].page = create_task(&tasks[1], tasks[1].mem, t2);
+	if (tasks[1].page == NULL)
+		return ;
     tasks[1].status = TASK_RUNNING;
     tasks[1].id = 2;
-	tasks[1].mem = 1024;
     tasks[1].next = &tasks[2];
-    tasks[2].page = create_task(&tasks[2], 1024, t3);
+	tasks[2].mem = 1024;
+    tasks[2].page = create_task(&tasks[2], tasks[2].mem, t3);
+	if (tasks[2].page == NULL)
+		return ;
     tasks[2].status = TASK_RUNNING;
     tasks[2].id = 3;
-	tasks[2].mem = 1024;
     tasks[2].next = &tasks[0];
 
 }
