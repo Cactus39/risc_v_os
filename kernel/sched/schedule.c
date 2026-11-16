@@ -3,8 +3,10 @@
 #include <time.h>
 #include <sys.h>
 #include <csr.h>
+#include <mem.h>
+#include <config.h>
 
-static unsigned char stack[4][1024] __attribute__((aligned(16)));
+//static unsigned char stack[4][1024] __attribute__((aligned(16)));
 
 task_t tasks[3];
 task_t *current;
@@ -58,9 +60,12 @@ registers_t *schedule(registers_t *frame) {
     return (idle_task.sp);
 }
 
-void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(*fn)(void)) {
-    unsigned int csr_flags = (MSTATUS_MPP | MSTATUS_MPIE);
-
+page_t	*create_task(task_t *task, unsigned int size, void(*fn)(void)) {
+	page_t			*page = alloc_pages((size + (PAGE_SIZE - 1)) >> 10);
+	if (page == NULL)
+		return (NULL);
+	unsigned char	*stack = (unsigned char *)(RAM_START + (page->index * PAGE_SIZE));
+    unsigned int	csr_flags = (MSTATUS_MPP | MSTATUS_MPIE);
     unsigned int    top = (unsigned int)(stack + size) & ~0xf;
 
     registers_t *registers = (registers_t *)(top - 144);
@@ -70,6 +75,7 @@ void    create_task(task_t *task, unsigned char *stack, unsigned int size, void(
     registers->mstatus = csr_flags;
     registers->regs[RA] = (unsigned int)fn_task_exit;
     task->sp = registers;
+	return (page);
 }
 
 void    t1(void) {
@@ -94,7 +100,7 @@ void    t3(void) {
 }
 
 void    start_tasks(void) {
-    create_task(&idle_task, stack[3], 1024, fn_task_idle);
+    idle_task.page = create_task(&idle_task, 1024, fn_task_idle);
     idle_task.wake_at = 0;
     idle_task.id = 0;
     idle_task.status = TASK_RUNNING;
@@ -105,15 +111,15 @@ void    start_tasks(void) {
 }
 
 void    add_task(void) {
-    create_task(&tasks[0], stack[0], 1024, t1);
+    tasks[0].page = create_task(&tasks[0], 1024, t1);
     tasks[0].status = TASK_RUNNING;
     tasks[0].id = 1;
     tasks[0].next = &tasks[1];
-    create_task(&tasks[1], stack[1], 1024, t2);
+    tasks[1].page = create_task(&tasks[1], 1024, t2);
     tasks[1].status = TASK_RUNNING;
     tasks[1].id = 2;
     tasks[1].next = &tasks[2];
-    create_task(&tasks[2], stack[2], 1024, t3);
+    tasks[2].page = create_task(&tasks[2], 1024, t3);
     tasks[2].status = TASK_RUNNING;
     tasks[2].id = 3;
     tasks[2].next = &tasks[0];

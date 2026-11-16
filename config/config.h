@@ -6,7 +6,7 @@
 
 # define PAGE_SHIFT 10
 # define RAM_SIZE (1u << 19)
-# define MAX_ORDER 8
+# define MAX_ORDER 7
 # define PAGE_SIZE (1u << (PAGE_SHIFT))
 # define NUM_PAGES ((RAM_SIZE) >> (PAGE_SHIFT))
 # define RAM_START (0x20000000u)

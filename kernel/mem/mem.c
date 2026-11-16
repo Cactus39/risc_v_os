@@ -77,7 +77,10 @@ page_t  *alloc_pages(uint32_t order) {
         else {
             res = divide_page(&free_area[k], order);
             if (res != 0xffffffff)
+            {
+				irq_restore(irq);
                 return (&memmap[res]);
+            }
 			irq_restore(irq);
             return (NULL);
         }
