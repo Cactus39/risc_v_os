@@ -100,12 +100,15 @@ void    t3(void) {
 }
 
 void    start_tasks(void) {
+	check_mem();
+
     idle_task.page = create_task(&idle_task, 1024, fn_task_idle);
     idle_task.wake_at = 0;
     idle_task.id = 0;
     idle_task.status = TASK_RUNNING;
     idle_task.next = (void *)0;
     current = &tasks[0];
+	check_mem();
     __asm__ __volatile__ ("mv sp, %0\n\t"
                             "j ret_from_trap":: "r"(current->sp));
 }

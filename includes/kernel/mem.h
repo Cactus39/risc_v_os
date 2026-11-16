@@ -9,10 +9,10 @@ typedef struct page_s {
     uint8_t         is_free;
 } page_t;
 
-//page_t	*memmap;
-//page_t	*free_area;
+
 void    init_mem(void);
 page_t  *alloc_pages(uint32_t k);
 void    free_pages(page_t *page, uint32_t order);
+void	check_mem(void);
 
 #endif
