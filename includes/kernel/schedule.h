@@ -16,6 +16,7 @@ typedef struct task_s{
     struct task_s       *next;
 	page_t				*page;
     unsigned int        id;
+    unsigned int        mem;
     unsigned int        wake_at;
     enum task_status_t  status;
 } task_t;

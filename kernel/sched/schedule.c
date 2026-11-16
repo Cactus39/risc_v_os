@@ -43,6 +43,8 @@ registers_t *schedule(registers_t *frame) {
     {
         if (time_to_wake(current))
             current->status = TASK_RUNNING;
+    	if (current->status == TASK_DEAD)
+    		free_pages(current->page, (current->mem + PAGE_SIZE - 1)>>10);
         current = current->next;
     }
     if (time_to_wake(current))
@@ -92,23 +94,22 @@ void    t2(void) {
     }
 }
 void    t3(void) {
-    for (int i = 0; i < 3; i++){
-    // while (1){
-        uprintf("\t\t%d", uptime_ms());
+    //for (int i = 0; i < 3; i++){
+    while (1){
+        //uprintf("\t\t%d", uptime_ms());
+    	check_mem();
         msleep(40);
     }
 }
 
 void    start_tasks(void) {
-	check_mem();
-
     idle_task.page = create_task(&idle_task, 1024, fn_task_idle);
     idle_task.wake_at = 0;
     idle_task.id = 0;
+	idle_task.mem = 1024;
     idle_task.status = TASK_RUNNING;
     idle_task.next = (void *)0;
     current = &tasks[0];
-	check_mem();
     __asm__ __volatile__ ("mv sp, %0\n\t"
                             "j ret_from_trap":: "r"(current->sp));
 }
@@ -117,14 +118,17 @@ void    add_task(void) {
     tasks[0].page = create_task(&tasks[0], 1024, t1);
     tasks[0].status = TASK_RUNNING;
     tasks[0].id = 1;
+	tasks[0].mem = 1024;
     tasks[0].next = &tasks[1];
     tasks[1].page = create_task(&tasks[1], 1024, t2);
     tasks[1].status = TASK_RUNNING;
     tasks[1].id = 2;
+	tasks[1].mem = 1024;
     tasks[1].next = &tasks[2];
     tasks[2].page = create_task(&tasks[2], 1024, t3);
     tasks[2].status = TASK_RUNNING;
     tasks[2].id = 3;
+	tasks[2].mem = 1024;
     tasks[2].next = &tasks[0];
 
 }

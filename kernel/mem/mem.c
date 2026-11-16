@@ -91,14 +91,14 @@ page_t  *alloc_pages(uint32_t order) {
 
 void	check_mem(void){
 	int     total = 0;
-    	int     local = 0;
+    int     local = 0;
 
-    	for (int i = 0; i <= MAX_ORDER; i++) {
-       		 uprintf("size %d free blocks %d  mem %d\n",
-            	(1<<i) * 1024,
-            	local = list_count(&free_area[i]),
-            	(free_area[i].next->index));
-        	total += (local * (1 << i));
+    for (int i = 0; i <= MAX_ORDER; i++) {
+       	 uprintf("size %d free blocks %d  mem %d\n",
+			(1<<i) * 1024,
+			local = list_count(&free_area[i]),
+			(free_area[i].next->index));
+		total += (local * (1 << i));
     	}
         uprintf("total pages %d\n", NUM_PAGES);
         uprintf("free pages %d\n", total);
