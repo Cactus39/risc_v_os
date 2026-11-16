@@ -8,6 +8,8 @@
 # define RAM_SIZE (1u << 19)
 # define MAX_ORDER 8
 # define PAGE_SIZE (1u << (PAGE_SHIFT))
-# define RAM_BASE (0x20000000u)
+# define NUM_PAGES ((RAM_SIZE) >> (PAGE_SHIFT))
+# define RAM_START (0x20000000u)
+# define RAM_END (0x20080000u)
 #endif
 
